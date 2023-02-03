@@ -129,22 +129,62 @@ func main() {
 		//convert paramId to uint
 		paramIDUint := uint(paramID)
 
+		//get updated value from body and point to upDatedTask
 		if err := c.BodyParser(&upDatedTask); err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(err.Error())
 		}
 
+		//Fetch task from database with id same as param's id
 		db.First(&task, paramIDUint)
 
+		//check if task exist
 		if task.ID == 0 {
+			//send message to user
 			return c.Status(fiber.StatusOK).SendString("Task not found.")
 		}
 
+		//update task name
 		task.Name = upDatedTask.Name
+
+		//save updated value in db
 		db.Save(&task)
 
 		return c.Status(fiber.StatusOK).SendString("Task Updated successfully.")
 	})
 
+	app.Delete("/task/:id", func(c *fiber.Ctx) error {
+
+		var task Todo
+
+		//get id from params
+		id := c.Params("id")
+
+		//convert id from param to int
+		paramID, err := strconv.Atoi(id)
+
+		if err != nil {
+			panic(err)
+		}
+
+		//convert paramId to uint
+		paramIDUint := uint(paramID)
+
+		db.First(&task, paramIDUint)
+
+		//check if task exist
+		if task.ID == 0 {
+			//send message to user
+			return c.Status(fiber.StatusOK).SendString("Task not found.")
+		} else {
+			//delete task from database
+			db.Delete(&Todo{}, paramIDUint)
+		}
+
+		//return c.Status(fiber.StatusOK).SendString("Task deleted successfully.")
+		return c.Status(fiber.StatusOK).JSON("Task deleted succesfully")
+	})
+
+	//listen to port
 	log.Fatal(app.Listen(":3000"))
 
 }
