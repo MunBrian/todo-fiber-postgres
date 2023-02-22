@@ -8,6 +8,7 @@ import (
 	"github.com/MunBrian/todo-fiber-postgres/controllers"
 	"github.com/MunBrian/todo-fiber-postgres/initializers"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func init() {
@@ -20,6 +21,9 @@ func init() {
 func main() {
 
 	app := fiber.New()
+
+	// Default config
+	app.Use(cors.New())
 
 	//get all todos
 	app.Get("/", controllers.GetAllTasks)
@@ -37,6 +41,6 @@ func main() {
 	app.Delete("/task/:id", controllers.DeleteTask)
 
 	//listen to port
-	log.Fatal(app.Listen(":3000"))
+	log.Fatal(app.Listen(":8000"))
 
 }
