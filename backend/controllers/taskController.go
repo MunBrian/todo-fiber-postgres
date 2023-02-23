@@ -61,7 +61,7 @@ func CreateTask(c *fiber.Ctx) error {
 	//Add todo data in the database
 	initializers.DB.Create(&todo)
 
-	return c.Status(fiber.StatusOK).SendString("Task created successfully.")
+	return c.Status(fiber.StatusOK).JSON(todo)
 }
 
 // update task
@@ -103,7 +103,7 @@ func UpdateTask(c *fiber.Ctx) error {
 	//save updated value in initializers.DB
 	initializers.DB.Save(&task)
 
-	return c.Status(fiber.StatusOK).SendString("Task Updated successfully.")
+	return c.Status(fiber.StatusOK).JSON(task)
 }
 
 // delete task
